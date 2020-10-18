@@ -40,6 +40,21 @@
                         <release>11</release>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>java</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <mainClass>com.breezzo.proxy.app.ProxyApp</mainClass>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
