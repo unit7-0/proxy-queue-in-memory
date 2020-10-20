@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.breezzo.queue</groupId>
-    <artifactId>proxy-queue</artifactId>
+    <artifactId>proxy-queue-in-memory</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>proxy-queue</name>
+    <name>proxy-queue-in-memory</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

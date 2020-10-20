@@ -1,8 +1,6 @@
 package com.breezzo.proxy.app;
 
-import com.breezzo.proxy.serialization.JavaSerializer;
-import com.breezzo.proxy.model.ServiceMessageData;
-import com.breezzo.topic.Topic;
+import com.breezzo.proxy.exception.ApplicationException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -12,13 +10,8 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.Optional;
 
-public class ProxyHandler implements HttpHandler, JavaSerializer {
+public class ProxyHandler implements HttpHandler {
     private static final String UNKNOWN_IP = "";
-    private final Topic topic;
-
-    public ProxyHandler(Topic topic) {
-        this.topic = topic;
-    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -27,7 +20,7 @@ public class ProxyHandler implements HttpHandler, JavaSerializer {
             handlerRequest(exchange, is);
         } catch (Exception e) {
             exchange.sendResponseHeaders(500, 0);
-            throw new RuntimeException(e.getMessage(), e);
+            throw new ApplicationException(e.getMessage(), e);
         }
     }
 
@@ -39,18 +32,12 @@ public class ProxyHandler implements HttpHandler, JavaSerializer {
 
         final var payload = is.readAllBytes();
         final var remoteIp = getRemoteIp(exchange).orElse(UNKNOWN_IP);
-        final var messageData = new ServiceMessageData(payload, remoteIp);
-        enqueueMessage(messageData);
+        // TODO
         exchange.sendResponseHeaders(200, 0);
     }
 
     private Optional<String> getRemoteIp(HttpExchange exchange) {
         return Optional.ofNullable(exchange.getRemoteAddress().getAddress())
                        .map(InetAddress::getHostAddress);
-    }
-
-    private void enqueueMessage(ServiceMessageData message) {
-        final var messageBytes = serialize(message);
-        topic.writeMessage(messageBytes);
     }
 }
